@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Blocker</title>
+    <style>
+        body {
+            font-family: roboto sans, sans;
+            padding: 12px;
+        }
+        input, button {
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h2>Word Blocker</h2>
+    <label for="word">Block Word:</label>
+    <input type="text" id="word">
+    <button id="addWord">Add Word</button>
+
+    <h3>Blocked Words:</h3>
+    <ul id="wordList"></ul>
+
+    <script src="popup.js"></script>
+</body>
+</html>
