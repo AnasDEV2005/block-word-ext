@@ -29,8 +29,7 @@ const observer = new MutationObserver((mutations) => {
 // Start observing the document body
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 
-// Initial scan on page load
-blockedWordsChecker();
+
 
 // TODO
 // * if add clicked while entry empty -> error

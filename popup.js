@@ -7,9 +7,12 @@ let masterPassword = ""; // Store the master password
 // Add a new blocked word
 addWordButton.addEventListener("click", async () => {
     const word = wordInput.value.trim();
+    if (word == " " || word == "") {
+        alert("Please enter a valid word.");
+        return;
+    }
 
-
-    addBlockedWord(word); // Initially unlocked
+    addBlockedWord(word);
     wordInput.value = ""; // Clear input
     
 });
