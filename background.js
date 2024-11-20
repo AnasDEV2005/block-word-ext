@@ -36,19 +36,20 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
     }
 }, { url: [{ urlMatches: ".*" }] });
 
+
 chrome.runtime.onMessage.addListener((message, sender) => {
     // Skip URLs that start with chrome://, about:, or data:
     if (sender.url.startsWith("chrome://") || sender.url.startsWith("about:") || sender.url.startsWith("data:")) {
         return;
     }
-chrome.runtime.onMessage.addListener((message, sender) => {
+
     if (message.action === "block") {
         console.log(message.reason); // Log the reason for blocking
         chrome.tabs.update(sender.tab.id, {
             url: "https://rusting-server-921y.onrender.com/"
         });
     }
-});
+
 
     chrome.storage.local.get("blockedWords", ({ blockedWords }) => {
         // If there are blocked words in storage

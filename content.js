@@ -31,3 +31,7 @@ observer.observe(document.body, { childList: true, subtree: true, characterData:
 
 // Initial scan on page load
 blockedWordsChecker();
+
+// TODO
+// * if add clicked while entry empty -> error
+// * 
