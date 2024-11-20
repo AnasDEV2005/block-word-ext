@@ -7,20 +7,11 @@ let masterPassword = ""; // Store the master password
 // Add a new blocked word
 addWordButton.addEventListener("click", async () => {
     const word = wordInput.value.trim();
-    if (word) {
-        // Prompt to set the master password if not already set
-        if (!masterPassword) {
-            masterPassword = prompt("Set a master password to lock/unlock words:");
-            if (!masterPassword) {
-                alert("Password is required to continue.");
-                return;
-            }
-            alert("Password set! Use this password to lock/unlock words.");
-        }
 
-        addBlockedWord(word, false); // Initially unlocked
-        wordInput.value = ""; // Clear input
-    }
+
+    addBlockedWord(word); // Initially unlocked
+    wordInput.value = ""; // Clear input
+    
 });
 
 // Load blocked words from storage
@@ -32,31 +23,52 @@ chrome.storage.local.get("blockedWords", ({ blockedWords }) => {
 
 // Add a word to the list with a remove button
 function addBlockedWord(word) {
-    const li = document.createElement("li");
-    const removeButton = document.createElement("button");
-
-    li.textContent = word + " ";
-    removeButton.textContent = "Remove";
-
-    // Handle removing the word
-    removeButton.addEventListener("click", () => {
-        const enteredPassword = prompt("Enter password to remove this word:");
-        if (enteredPassword === masterPassword) {
-            if (confirm(`Are you sure you want to remove "${word}"?`)) {
-                li.remove(); // Remove the word from the list visually
-                removeBlockedWord(word); // Update storage
+    // Check if password is already set in storage
+    chrome.storage.local.get("masterPassword", ({ masterPassword }) => {
+        // If no password is set, prompt user to set one
+        if (!masterPassword) {
+            const newPassword = prompt("Set a new master password to lock/unlock words:");
+            if (newPassword) {
+                // Save the password to chrome storage
+                chrome.storage.local.set({ masterPassword: newPassword });
+                alert("Password set successfully!");
+            } else {
+                alert("Password is required.");
+                return;
             }
-        } else {
-            alert("Incorrect password!");
         }
+
+        // Create the list item and remove button
+        const li = document.createElement("li");
+        const removeButton = document.createElement("button");
+
+        li.textContent = word + " ";
+        removeButton.textContent = "Remove";
+
+        // Handle removing the word
+        removeButton.addEventListener("click", () => {
+            const enteredPassword = prompt("Enter password to remove this word:");
+            // Check if the entered password matches the stored password
+            chrome.storage.local.get("masterPassword", ({ masterPassword }) => {
+                if (enteredPassword === masterPassword) {
+                    if (confirm(`Are you sure you want to remove "${word}"?`)) {
+                        li.remove(); // Remove the word from the list visually
+                        removeBlockedWord(word); // Update storage
+                    }
+                } else {
+                    alert("Incorrect password!");
+                }
+            });
+        });
+
+        li.appendChild(removeButton);
+        wordList.appendChild(li);
+
+        // Save the blocked word to storage
+        saveBlockedWord(word); // This ensures that the word is stored in chrome.storage.local
     });
-
-    li.appendChild(removeButton);
-    wordList.appendChild(li);
-
-    // Save the blocked word to storage
-    saveBlockedWord(word); // This ensures that the word is stored in chrome.storage.local
 }
+
 
 
 
