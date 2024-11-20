@@ -3,7 +3,7 @@
     "name": "Word Blocker",
     "version": "1.0",
     "description": "Blocks pages containing specific words, locked behind a password.",
-    "permissions": ["storage", "tabs", "webNavigation"],
+    "permissions": ["storage", "scripting", "tabs", "webNavigation"],
     "host_permissions": ["<all_urls>"],
     "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
@@ -20,7 +20,7 @@
         "js": ["content.js"]
       }
     ]
-    
+
   }
   
   

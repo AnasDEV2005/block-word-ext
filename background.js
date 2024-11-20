@@ -1,9 +1,15 @@
+
 // Clear blocked words when the extension is installed or reloaded
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.local.clear(() => {
         console.log("Blocked words have been cleared from storage.");
     });
 });
+
+
+
+
+
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {
     // Skip unsupported URL schemes
@@ -35,6 +41,14 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     if (sender.url.startsWith("chrome://") || sender.url.startsWith("about:") || sender.url.startsWith("data:")) {
         return;
     }
+chrome.runtime.onMessage.addListener((message, sender) => {
+    if (message.action === "block") {
+        console.log(message.reason); // Log the reason for blocking
+        chrome.tabs.update(sender.tab.id, {
+            url: "https://rusting-server-921y.onrender.com/"
+        });
+    }
+});
 
     chrome.storage.local.get("blockedWords", ({ blockedWords }) => {
         // If there are blocked words in storage
@@ -44,10 +58,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                 try {
                     // Fetch the page content asynchronously
                     const response = await fetch(sender.url);
-                    const pageContent = await response.text();
+                    const pageContent = response.text();
 
                     // Check if any blocked word is found in the page content
-                    for (const word of blockedWords) {
+                    for (word in blockedWords) {
                         if (pageContent.includes(word)) {
                             console.log("Blocked word found, redirecting...");
                             // Update the tab's URL if a blocked word is found
